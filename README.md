@@ -1,6 +1,7 @@
 start:
 - npm i
 - npm run dev
+- mongod (start mongodb)
 
 /**/
 
