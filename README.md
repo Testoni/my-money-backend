@@ -4,8 +4,6 @@ start:
 
 /**/
 
-created from 0:
-
 - backend -> npm -y
 
 main dev
