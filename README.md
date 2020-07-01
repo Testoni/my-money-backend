@@ -12,3 +12,10 @@ main dev
 
 dev dependencies
 - npm i --save-dev nodemon@1.11.0
+
+
+--- 
+
+Authentication
+
+npm i --save bcrypt@3.0.6 jsonwebtoken@7.3.0
