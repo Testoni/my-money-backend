@@ -39,3 +39,45 @@ const validateToken = (req, res, next) => {
         return res.status(200).sendd({ valid: !err})
     })
 }
+
+const signup = (req, res, next) => {
+    const name = req.body.name || ''
+    const email = req.body.email || ''
+    const password = req.body.password || ''
+    const confirmPassword = req.body.confirm_password || ''
+
+    if (!email.match(emailRegex)) {
+        return res.status(400).send({ errors: ['Invalid e-mail']})
+    }
+
+    if (!password.match(passwordRegex)) {
+        return res.status(400).send({
+            errors: ['Password needs: one uppercase letter, one lowercase letter, one number, one special character and size between 6-20']
+        })
+    }
+
+    const salt = bcrypt.genSaltSync()
+    const passwordHash = bcrypt.hashSync(password, salt)
+    if (!bcrypt.compareSync(confirmPassword, passwordHash)) {
+        return res.status(400).send({ errors: ['Passwords dont match']})
+    }
+
+    User.findOne({email}, (err, user) => {
+        if (err) {
+            return sendErrorsFromDB(res, err)
+        } else if (user) {
+            return res.status(400).send({ errors: ['User is already registered']})
+        } else {
+            const newUser = new User({ name, email, password: passwordHash})
+            newUser.save(err => {
+                if (err) {
+                    return sendErrorsFromDB(res, err)
+                } else {
+                    login(req, res, next)
+                }
+            })
+        }
+    })
+}
+
+module.exports = { login, signup, validateToken }
